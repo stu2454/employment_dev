@@ -1,13 +1,11 @@
-
+version: "3.9"
 services:
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/app
+      - "3000:3000" # Expose the frontend's port
     command: ["npm", "start"]
     depends_on:
       - backend
@@ -19,10 +17,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "${PORT}:${PORT}"
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
+      - "${PORT}:${PORT}" # Map backend's port dynamically
     command: ["node", "server.js"]
     environment:
       PORT: "${PORT}"
@@ -37,14 +32,13 @@ services:
   db:
     image: postgres:14
     container_name: secure_login-db
+    ports:
+      - "${DB_PORT}:5432" # Map the DB port dynamically
     environment:
       POSTGRES_USER: "${DB_USER}"
       POSTGRES_PASSWORD: "${DB_PASSWORD}"
       POSTGRES_DB: "${DB_NAME}"
-    ports:
-      - "${DB_PORT}:5432"
     volumes:
-      - ./backend/scripts:/docker-entrypoint-initdb.d
       - postgres_data:/var/lib/postgresql/data
 
 volumes:

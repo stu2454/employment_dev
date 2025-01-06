@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: backend
+    env: docker
+    dockerComposePath: docker-compose.yml
+    envVars:
+      - key: PORT
+        value: 5005
+      - key: DB_USER
+        value: stu
+      - key: DB_HOST
+        value: db
+      - key: DB_NAME
+        value: providersDB
+      - key: DB_PASSWORD
+        value: SmS21h2A
+      - key: DB_PORT
+        value: 5432
+      - key: REACT_APP_BACKEND_URL
+        value: http://backend:5005
