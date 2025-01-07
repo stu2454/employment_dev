@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const registerRouter = require('./routes/register'); // Import the register route
 const mfaRoutes = require('./routes/mfa'); // Import the MFA routes
+const { initialiseDatabase } = require('./initialiseDatabase'); // Import the initialiseDatabase function
+
 
 const app = express();
 
@@ -32,3 +34,18 @@ const PORT = process.env.PORT || 5005;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+// Initialise the database schema and start the server
+initialiseDatabase()
+  .then(() => {
+    console.log('Database initialised successfully.');
+
+    // Start the server only after the database is initialised
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error('Failed to initialise the database:', error);
+    process.exit(1); // Exit the process if the database initialisation fails
+  });
