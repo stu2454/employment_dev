@@ -1,4 +1,4 @@
-const { reject } = require('bcrypt/promises');
+//const { reject } = require('bcrypt/promises');
 const { Client } = require('pg');
 
 const createClient = () => {
