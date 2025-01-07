@@ -5,8 +5,6 @@ const mfaRoutes = require('./routes/mfa'); // Import the MFA routes
 
 const app = express();
 
-const 
-
 // Apply CORS middleware
 app.use(cors({
   //origin: 'http://localhost:3000',
