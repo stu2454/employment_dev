@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const registerRouter = require('./routes/register'); // Import the register route
 const mfaRoutes = require('./routes/mfa'); // Import the MFA routes
-const { initialiseDatabase } = require('./initialiseDatabase'); // Import the initialiseDatabase function
+const initialiseDatabase = require('./initialiseDatabase'); // Import the initialiseDatabase function
 
 
 const app = express();
