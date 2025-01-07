@@ -30,11 +30,6 @@ app.use('/api/register', registerRouter);
 // Register the /api/mfa route
 app.use('/api/mfa', mfaRoutes);
 
-const PORT = process.env.PORT || 5005;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-
 // Initialise the database schema and start the server
 initialiseDatabase()
   .then(() => {
@@ -49,3 +44,9 @@ initialiseDatabase()
     console.error('Failed to initialise the database:', error);
     process.exit(1); // Exit the process if the database initialisation fails
   });
+
+  //start server
+  const PORT = process.env.PORT || 5005;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
