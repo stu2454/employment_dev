@@ -4,6 +4,8 @@ import { TextField, Button, Container, Typography, Grid, Alert, Divider } from "
 import { useNavigate } from "react-router-dom";
 import logos from "../assets/logos.png"; // Top-left logo
 
+const BACKEND_URL = process.env.REACT_APP_API_URL;
+
 const RegistrationPage = () => {
   const navigate = useNavigate();
   const [providerName, setProviderName] = useState("");
@@ -83,7 +85,8 @@ const RegistrationPage = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5005/api/register", {
+      //const response = await axios.post("http://localhost:5005/api/register", {
+      const response = await axios.post(`${BACKEND_URL}/api/register`, {
         provider_name: providerName,
         provider_id: providerID,
         contact_phone: contactPhone,
@@ -94,7 +97,8 @@ const RegistrationPage = () => {
 
       if (response.data.message === "Provider registered successfully!") {
         // Generate MFA
-        const mfaResponse = await axios.post("http://localhost:5005/api/mfa/generate", {
+        //const mfaResponse = await axios.post("http://localhost:5005/api/mfa/generate", {
+          const mfaResponse = await axios.post(`${BACKEND_URL}/api/mfa/generate`, {
           email: contactEmail,
         });
 
@@ -117,7 +121,8 @@ const RegistrationPage = () => {
 
   const handleVerifyMFA = async () => {
     try {
-      const response = await axios.post("http://localhost:5005/api/mfa/verify", {
+      //const response = await axios.post("http://localhost:5005/api/mfa/verify", {
+      const response = await axios.post(`${BACKEND_URL}/api/mfa/verify`, {
         email: contactEmail,
         otp: otp,
       });

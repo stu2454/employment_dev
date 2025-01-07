@@ -5,9 +5,12 @@ const mfaRoutes = require('./routes/mfa'); // Import the MFA routes
 
 const app = express();
 
+const 
+
 // Apply CORS middleware
 app.use(cors({
-  origin: 'http://localhost:3000',
+  //origin: 'http://localhost:3000',
+  origin: 'https://secure-login-uk0e.onrender.com',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 204
