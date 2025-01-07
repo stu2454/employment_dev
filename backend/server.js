@@ -13,6 +13,9 @@ console.log('Schema file path exists:', fs.existsSync(schemaPath));
 
 const app = express();
 
+// Declare PORT at the top
+const PORT = process.env.PORT || 5005;
+
 // Apply CORS middleware
 app.use(cors({
   //origin: 'http://localhost:3000',
