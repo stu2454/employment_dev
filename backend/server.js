@@ -37,6 +37,7 @@ app.use('/api/register', registerRouter);
 app.use('/api/mfa', mfaRoutes);
 
 // Initialise the database schema and start the server
+//
 initialiseDatabase()
   .then(() => {
     console.log('Database initialised successfully.');
@@ -51,8 +52,3 @@ initialiseDatabase()
     process.exit(1); // Exit the process if the database initialisation fails
   });
 
-  //start server
-  const PORT = process.env.PORT || 5005;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
