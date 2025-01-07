@@ -15,7 +15,7 @@ const pool = new Pool({
  */
 const initialiseDatabase = async () => {
   try {
-    const schemaPath = path.join(__dirname, 'scripts', 'schema.sql'); // Adjust path if needed
+    const schemaPath = path.join(__dirname, '../scripts/schema.sql'); // Adjust path if needed
     const schema = fs.readFileSync(schemaPath, 'utf-8'); // Read the SQL file
     await pool.query(schema); // Execute the SQL script
     console.log('Database schema initialised successfully');
