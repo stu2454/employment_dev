@@ -24,6 +24,23 @@ router.post('/', async (req, res) => {
   await client.connect();
 
   try {
+    let effective_number_of_sites = number_of_sites;
+
+    // For staff, fetch the number_of_sites from the admin's record
+    if (role === 'staff') {
+      const adminResult = await client.query(
+        "SELECT number_of_sites FROM providers WHERE provider_name = $1 AND provider_id = $2 AND role = 'admin'",
+        [provider_name, provider_id]
+      );
+
+      if (adminResult.rows.length === 0) {
+        console.error("Administrator not found for provider:", provider_name, provider_id);
+        return res.status(400).json({ error: "Administrator account not found for the provided provider." });
+      }
+
+      effective_number_of_sites = adminResult.rows[0].number_of_sites;
+    }
+
     // Check if contact_email already exists
     const checkEmailResult = await client.query(
       "SELECT contact_email FROM providers WHERE contact_email = $1 AND provider_id = $2",
@@ -38,7 +55,7 @@ router.post('/', async (req, res) => {
     // Insert provider details into the 'providers' table
     await client.query(
       "INSERT INTO providers (provider_name, provider_id, contact_phone, contact_email, number_of_sites, role) VALUES ($1, $2, $3, $4, $5, $6)",
-      [provider_name, provider_id, contact_phone, contact_email, number_of_sites || 0, role]
+      [provider_name, provider_id, contact_phone, contact_email, effective_number_of_sites || 0, role]
     );
 
     console.log("Inserted provider with email:", contact_email);
