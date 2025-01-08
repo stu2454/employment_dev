@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { TextField, Button, Container, Typography, Grid, MenuItem, Alert, Divider } from "@mui/material";
+import { TextField, Button, Container, Typography, Grid, MenuItem, Alert, Divider, CircularProgress } from "@mui/material";
 import logos from "../assets/logos.png"; // Top-left logo
 import "../styles/LoginPage.css"; // Add styles for the page
 
@@ -16,10 +16,12 @@ const LoginPage = () => {
   const [otp, setOtp] = useState("");
   const [mfaRequired, setMfaRequired] = useState(false);
   const [loginError, setLoginError] = useState("");
+  const [loading, setLoading] = useState(false); // New loading state
 
   // Fetch sites based on providerID
   useEffect(() => {
     if (providerID) {
+      setLoading(true); // Show loading while fetching sites
       axios
         .post(`${BACKEND_URL}/api/sites`, { provider_id: providerID })
         .then((response) => {
@@ -28,6 +30,9 @@ const LoginPage = () => {
         .catch((error) => {
           console.error("Error fetching sites:", error);
           setSites([]);
+        })
+        .finally(() => {
+          setLoading(false); // Hide loading
         });
     }
   }, [providerID]);
@@ -35,9 +40,9 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoginError("");
+    setLoading(true); // Show loading spinner during login
 
     try {
-      // Validate login and check MFA requirement
       const response = await axios.post(`${BACKEND_URL}/api/login`, {
         provider_id: providerID,
         site: selectedSite,
@@ -47,16 +52,19 @@ const LoginPage = () => {
       if (response.data.mfa_required) {
         setMfaRequired(true);
       } else {
-        //alert("Login successful!");
-        navigate("/data-entry-start"); // Redirect to dashboard or appropriate page
+        navigate("/data-entry-start"); // Redirect to Data Entry Start Page
       }
     } catch (error) {
       console.error("Login error:", error);
       setLoginError("Login failed. Please check your details and try again.");
+    } finally {
+      setLoading(false); // Hide loading spinner
     }
   };
 
   const handleVerifyMFA = async () => {
+    setLoading(true); // Show loading spinner during MFA verification
+
     try {
       const response = await axios.post(`${BACKEND_URL}/api/mfa/verify`, {
         email: contactEmail,
@@ -64,14 +72,15 @@ const LoginPage = () => {
       });
 
       if (response.data.message === "MFA verified successfully.") {
-        alert("Login successful!");
-        navigate("/dashboard");
+        navigate("/data-entry-start"); // Redirect to Data Entry Start Page
       } else {
         setLoginError("Failed to verify MFA. Please try again.");
       }
     } catch (error) {
       console.error("MFA verification error:", error);
       setLoginError("Failed to verify MFA. Please try again.");
+    } finally {
+      setLoading(false); // Hide loading spinner
     }
   };
 
@@ -91,7 +100,11 @@ const LoginPage = () => {
           {loginError}
         </Alert>
       )}
-      {!mfaRequired ? (
+      {loading ? (
+        <div className="loading-spinner">
+          <CircularProgress />
+        </div>
+      ) : !mfaRequired ? (
         <form onSubmit={handleLogin}>
           <Grid container spacing={2}>
             <Grid item xs={12}>

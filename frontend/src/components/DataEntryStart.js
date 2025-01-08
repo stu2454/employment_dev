@@ -16,7 +16,8 @@ const DataEntryStart = () => {
       <Divider className="data-entry-divider" />
       {/* Main Content */}
       <div className="data-entry-content">
-        <img src={underConstruction} alt="Under Construction" className="data-entry-image" />
+      <img src={underConstruction} alt="Under Construction" loading="lazy" className="data-entry-image" />
+
       </div>
     </div>
   );
