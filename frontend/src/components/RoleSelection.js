@@ -9,6 +9,7 @@ const RoleSelection = () => {
     const handleRoleSelect = (role) => {
         navigate(`/register?role=${role}`);
     };
+    console.log("Selected role:", role);
 
     return (
         <div className="role-selection-container">
