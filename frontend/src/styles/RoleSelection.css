@@ -1,0 +1,72 @@
+/* RoleSelection.css */
+.role-selection-container {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+}
+
+.role-selection-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+.gov-ndis-logo {
+    height: 60px; /* Match LandingPage logo size */
+}
+
+.header-right h2 {
+    font-size: 18px;
+    color: #555;
+}
+
+.separator {
+    border: 0;
+    height: 1px;
+    background: #ccc;
+    margin: 20px 0;
+}
+
+.role-selection-main {
+    margin-top: 50px;
+}
+
+.role-selection-main h1 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 40px;
+}
+
+.role-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 40px; /* Spacing between buttons */
+}
+
+.role-button {
+    width: 200px;
+    height: 200px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.role-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.15);
+}
+
+.admin-button {
+    background-color: #4CAF50; /* Green for Admin */
+}
+
+.staff-button {
+    background-color: #2196F3; /* Blue for Staff */
+}

@@ -6,10 +6,10 @@ import '../styles/RoleSelection.css'; // Add this for CSS styles
 const RoleSelection = () => {
     const navigate = useNavigate();
 
-    const handleRoleSelect = (role) => {
-        navigate(`/register?role=${role}`);
+    const handleRoleSelect = (selectedRole) => {
+        console.log("Selected role:", selectedRole); // Log the selected role
+        navigate(`/register?role=${selectedRole}`);
     };
-    console.log("Selected role:", role);
 
     return (
         <div className="role-selection-container">
