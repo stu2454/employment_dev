@@ -1,0 +1,92 @@
+/* General container styling */
+.login-container {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Header styles */
+.login-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+.login-header img {
+    height: 50px; /* Matches logo size on other pages */
+}
+
+/* Page title styling */
+.login-title {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Divider styling */
+.login-divider {
+    border: 0;
+    height: 1px;
+    background: #ccc;
+    margin: 20px 0;
+}
+
+/* Form styling */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.login-form .MuiTextField-root {
+    width: 100%;
+}
+
+.login-form .MuiButton-root {
+    padding: 10px;
+    background-color: #4CAF50; /* Green button */
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-form .MuiButton-root:hover {
+    background-color: #45a049;
+}
+
+/* MFA container */
+.mfa-container {
+    margin-top: 20px;
+}
+
+.mfa-container h5 {
+    font-size: 18px;
+    color: #333;
+}
+
+.mfa-container p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.mfa-container .MuiButton-root {
+    background-color: #2196F3; /* Blue button for MFA */
+}
+
+.mfa-container .MuiButton-root:hover {
+    background-color: #1e88e5;
+}
+
+/* Alert styles */
+.login-alert {
+    margin-bottom: 20px;
+}
