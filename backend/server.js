@@ -2,33 +2,35 @@ const express = require('express');
 const cors = require('cors');
 const registerRouter = require('./routes/register'); // Import the register route
 const mfaRoutes = require('./routes/mfa'); // Import the MFA routes
+const createClient = require('./config/db'); // Import the database client function
 const initialiseDatabase = require('./config/initialiseDatabase'); // Import the initialiseDatabase function
-
-//console.log('InitialiseDatabase file path:', require.resolve('./config/initialiseDatabase'));
 const fs = require('fs');
 const path = require('path');
 
+// Path to the database schema file
 const schemaPath = path.join(__dirname, 'scripts', 'schema.sql');
-//console.log('Schema file path exists:', fs.existsSync(schemaPath));
 
+// Verify schema file exists
+console.log('Schema file path exists:', fs.existsSync(schemaPath));
+
+// Create the Express app
 const app = express();
 
-// Declare PORT at the top
+// Declare PORT
 const PORT = process.env.PORT || 5005;
 
 // Apply CORS middleware
 app.use(cors({
-  //origin: 'http://localhost:3000',
-  origin: 'https://secure-login-uk0e.onrender.com',
+  origin: 'https://secure-login-uk0e.onrender.com', // Update this with your frontend domain
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
-  optionsSuccessStatus: 204
+  optionsSuccessStatus: 204,
 }));
 
 // Parse incoming JSON requests
 app.use(express.json());
 
-// Define routes
+// Root endpoint
 app.get('/', (req, res) => {
   res.send('Welcome to the Provider Registration API');
 });
@@ -66,9 +68,7 @@ app.post('/api/validate-provider', async (req, res) => {
   }
 });
 
-
 // Initialise the database schema and start the server
-//
 initialiseDatabase()
   .then(() => {
     console.log('Database initialised successfully.');
@@ -82,4 +82,3 @@ initialiseDatabase()
     console.error('Failed to initialise the database:', error);
     process.exit(1); // Exit the process if the database initialisation fails
   });
-
