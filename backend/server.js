@@ -39,6 +39,27 @@ app.use('/api/register', registerRouter);
 // Register the /api/mfa route
 app.use('/api/mfa', mfaRoutes);
 
+app.post('/api/validate-provider', async (req, res) => {
+  const { provider_name, provider_id } = req.body;
+
+  if (!provider_name || !provider_id) {
+    return res.status(400).json({ valid: false });
+  }
+
+  try {
+    const result = await client.query(
+      'SELECT 1 FROM providers WHERE provider_name = $1 AND provider_id = $2',
+      [provider_name, provider_id]
+    );
+
+    res.json({ valid: result.rows.length > 0 });
+  } catch (error) {
+    console.error('Error validating provider:', error);
+    res.status(500).json({ valid: false });
+  }
+});
+
+
 // Initialise the database schema and start the server
 //
 initialiseDatabase()

@@ -5,7 +5,6 @@ import { TextField, Button, Container, Typography, Grid, Alert, Divider } from "
 import logos from "../assets/logos.png"; // Top-left logo
 import "../styles/RegistrationPage.css";
 
-
 const BACKEND_URL = process.env.REACT_APP_API_URL;
 
 const RegistrationPage = () => {
@@ -23,6 +22,7 @@ const RegistrationPage = () => {
   const [sites, setSites] = useState([""]);
   const [errors, setErrors] = useState({});
   const [registrationError, setRegistrationError] = useState("");
+  const [validationError, setValidationError] = useState(""); // New state for validation error
   const [showMFA, setShowMFA] = useState(false);
   const [qrCode, setQrCode] = useState("");
   const [otp, setOtp] = useState("");
@@ -33,48 +33,29 @@ const RegistrationPage = () => {
     return re.test(String(email).toLowerCase());
   };
 
-  const handleSiteChange = (index, value) => {
-    const newSites = [...sites];
-    newSites[index] = value;
-    setSites(newSites);
-  };
-
-  const handleEmailChange = (e) => {
-    const email = e.target.value;
-    setContactEmail(email);
-    let validationErrors = { ...errors };
-
-    if (!validateEmail(email)) {
-      validationErrors.contactEmail = "Invalid email format";
-    } else {
-      delete validationErrors.contactEmail;
-    }
-
-    if (email !== confirmEmail) {
-      validationErrors.confirmEmail = "Email addresses do not match";
-    } else {
-      delete validationErrors.confirmEmail;
-    }
-
-    setErrors(validationErrors);
-  };
-
-  const handleConfirmEmailChange = (e) => {
-    const email = e.target.value;
-    setConfirmEmail(email);
-    let validationErrors = { ...errors };
-
-    if (email !== contactEmail) {
-      validationErrors.confirmEmail = "Email addresses do not match";
-    } else {
-      delete validationErrors.confirmEmail;
-    }
-
-    setErrors(validationErrors);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setValidationError(""); // Clear previous validation errors
+
+    // Validate provider_name and provider_id for staff
+    if (role === "staff") {
+      try {
+        const response = await axios.post(`${BACKEND_URL}/api/validate-provider`, {
+          provider_name: providerName,
+          provider_id: providerID,
+        });
+
+        if (!response.data.valid) {
+          setValidationError("Provider Name or Provider ID is invalid. Please try again.");
+          return;
+        }
+      } catch (error) {
+        console.error("Error validating provider:", error);
+        setValidationError("Unable to validate provider. Please try again later.");
+        return;
+      }
+    }
+
     let validationErrors = {};
 
     if (!validateEmail(contactEmail)) {
@@ -96,9 +77,9 @@ const RegistrationPage = () => {
         provider_id: providerID,
         contact_phone: contactPhone,
         contact_email: contactEmail,
-        number_of_sites: role === "admin" ? numberOfSites : undefined, // Only for admin
-        sites: role === "admin" ? sites : undefined, // Only for admin
-        role, // Pass the role to the backend
+        number_of_sites: role === "admin" ? numberOfSites : undefined,
+        sites: role === "admin" ? sites : undefined,
+        role,
       };
 
       const response = await axios.post(`${BACKEND_URL}/api/register`, payload);
@@ -117,30 +98,7 @@ const RegistrationPage = () => {
       }
     } catch (error) {
       console.error("Error registering provider:", error);
-      if (error.response && error.response.data && error.response.data.error) {
-        setRegistrationError(error.response.data.error);
-      } else {
-        alert("An error occurred while registering the provider.");
-      }
-    }
-  };
-
-  const handleVerifyMFA = async () => {
-    try {
-      const response = await axios.post(`${BACKEND_URL}/api/mfa/verify`, {
-        email: contactEmail,
-        otp: otp,
-      });
-
-      if (response.data.message === "MFA verified successfully.") {
-        setMfaMessage("MFA verified successfully.");
-        navigate("/login");
-      } else {
-        setMfaMessage("Failed to verify MFA. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error verifying MFA:", error);
-      setMfaMessage("Failed to verify MFA. Please try again.");
+      setRegistrationError("An error occurred while registering. Please try again.");
     }
   };
 
@@ -160,6 +118,11 @@ const RegistrationPage = () => {
       <Typography variant="h4" component="h1" gutterBottom>
         Registration Page
       </Typography>
+      {validationError && (
+        <Alert severity="error" style={{ marginBottom: "20px" }}>
+          {validationError}
+        </Alert>
+      )}
       {registrationError && (
         <Alert severity="error" style={{ marginBottom: "20px" }}>
           {registrationError}
@@ -201,7 +164,7 @@ const RegistrationPage = () => {
                 fullWidth
                 type="email"
                 value={contactEmail}
-                onChange={handleEmailChange}
+                onChange={(e) => setContactEmail(e.target.value)}
                 error={!!errors.contactEmail}
                 helperText={errors.contactEmail}
                 required
@@ -213,7 +176,7 @@ const RegistrationPage = () => {
                 fullWidth
                 type="email"
                 value={confirmEmail}
-                onChange={handleConfirmEmailChange}
+                onChange={(e) => setConfirmEmail(e.target.value)}
                 error={!!errors.confirmEmail}
                 helperText={errors.confirmEmail}
                 required
@@ -241,7 +204,11 @@ const RegistrationPage = () => {
                       label={`Site Name ${index + 1}`}
                       fullWidth
                       value={site}
-                      onChange={(e) => handleSiteChange(index, e.target.value)}
+                      onChange={(e) => {
+                        const newSites = [...sites];
+                        newSites[index] = e.target.value;
+                        setSites(newSites);
+                      }}
                       required
                     />
                   </Grid>
