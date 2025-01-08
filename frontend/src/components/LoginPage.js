@@ -16,12 +16,11 @@ const LoginPage = () => {
   const [otp, setOtp] = useState("");
   const [mfaRequired, setMfaRequired] = useState(false);
   const [loginError, setLoginError] = useState("");
-  const [loading, setLoading] = useState(false); // New loading state
+  const [loading, setLoading] = useState(false); // For spinner after login button is pressed
 
   // Fetch sites based on providerID
   useEffect(() => {
     if (providerID) {
-      setLoading(true); // Show loading while fetching sites
       axios
         .post(`${BACKEND_URL}/api/sites`, { provider_id: providerID })
         .then((response) => {
@@ -30,17 +29,16 @@ const LoginPage = () => {
         .catch((error) => {
           console.error("Error fetching sites:", error);
           setSites([]);
-        })
-        .finally(() => {
-          setLoading(false); // Hide loading
         });
+    } else {
+      setSites([]); // Clear sites if providerID is empty
     }
   }, [providerID]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoginError("");
-    setLoading(true); // Show loading spinner during login
+    setLoading(true); // Show spinner after login button is pressed
 
     try {
       const response = await axios.post(`${BACKEND_URL}/api/login`, {
@@ -58,12 +56,12 @@ const LoginPage = () => {
       console.error("Login error:", error);
       setLoginError("Login failed. Please check your details and try again.");
     } finally {
-      setLoading(false); // Hide loading spinner
+      setLoading(false); // Hide spinner after response
     }
   };
 
   const handleVerifyMFA = async () => {
-    setLoading(true); // Show loading spinner during MFA verification
+    setLoading(true); // Show spinner during MFA verification
 
     try {
       const response = await axios.post(`${BACKEND_URL}/api/mfa/verify`, {
@@ -80,7 +78,7 @@ const LoginPage = () => {
       console.error("MFA verification error:", error);
       setLoginError("Failed to verify MFA. Please try again.");
     } finally {
-      setLoading(false); // Hide loading spinner
+      setLoading(false); // Hide spinner after response
     }
   };
 
