@@ -21,8 +21,8 @@ const RegistrationPage = () => {
   const [numberOfSites, setNumberOfSites] = useState(1);
   const [sites, setSites] = useState([""]);
   const [errors, setErrors] = useState({});
-  const [registrationError, setRegistrationError] = useState("");
-  const [validationError, setValidationError] = useState(""); // New state for validation error
+  const [validationError, setValidationError] = useState(""); // For provider validation
+  const [registrationError, setRegistrationError] = useState(""); // For general registration errors
   const [showMFA, setShowMFA] = useState(false);
   const [qrCode, setQrCode] = useState("");
   const [otp, setOtp] = useState("");
@@ -35,7 +35,7 @@ const RegistrationPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setValidationError(""); // Clear previous validation errors
+    setValidationError("");
 
     // Validate provider_name and provider_id for staff
     if (role === "staff") {
@@ -150,8 +150,95 @@ const RegistrationPage = () => {
       {!showMFA ? (
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            {/* Form fields remain unchanged */}
-            {/* Existing fields */}
+            <Grid item xs={12}>
+              <TextField
+                label="Provider Name"
+                fullWidth
+                value={providerName}
+                onChange={(e) => setProviderName(e.target.value)}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Provider ID"
+                fullWidth
+                value={providerID}
+                onChange={(e) => setProviderID(e.target.value)}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Contact Phone"
+                fullWidth
+                value={contactPhone}
+                onChange={(e) => setContactPhone(e.target.value)}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Contact Email"
+                fullWidth
+                type="email"
+                value={contactEmail}
+                onChange={(e) => setContactEmail(e.target.value)}
+                error={!!errors.contactEmail}
+                helperText={errors.contactEmail}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Confirm Email"
+                fullWidth
+                type="email"
+                value={confirmEmail}
+                onChange={(e) => setConfirmEmail(e.target.value)}
+                error={!!errors.confirmEmail}
+                helperText={errors.confirmEmail}
+                required
+              />
+            </Grid>
+            {role === "admin" && (
+              <>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Number of Sites"
+                    fullWidth
+                    type="number"
+                    value={numberOfSites}
+                    onChange={(e) => {
+                      const newNumberOfSites = Math.max(1, parseInt(e.target.value, 10));
+                      setNumberOfSites(newNumberOfSites);
+                      setSites(Array(newNumberOfSites).fill(""));
+                    }}
+                    required
+                  />
+                </Grid>
+                {sites.map((site, index) => (
+                  <Grid item xs={12} key={index}>
+                    <TextField
+                      label={`Site Name ${index + 1}`}
+                      fullWidth
+                      value={site}
+                      onChange={(e) => {
+                        const newSites = [...sites];
+                        newSites[index] = e.target.value;
+                        setSites(newSites);
+                      }}
+                      required
+                    />
+                  </Grid>
+                ))}
+              </>
+            )}
+            <Grid item xs={12}>
+              <Button type="submit" variant="contained" color="primary" fullWidth>
+                Register
+              </Button>
+            </Grid>
           </Grid>
         </form>
       ) : (
