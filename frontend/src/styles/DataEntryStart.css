@@ -1,44 +1,45 @@
 /* General container styling */
 .data-entry-container {
     font-family: Arial, sans-serif;
+    width: 100%; /* Full width */
+    height: 100vh; /* Full height */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     text-align: center;
-    padding: 20px;
-    max-width: 600px;
-    margin: 0 auto;
   }
   
-  /* Header logo styling */
-  .data-entry-container img {
-    height: 50px; /* Matches logo size on other pages */
+  /* Header styling */
+  .data-entry-header {
+    padding: 20px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .data-entry-logo {
+    height: 50px; /* Consistent logo size */
   }
   
   /* Divider styling */
-  .data-entry-container .MuiDivider-root {
-    border: 0;
-    height: 1px;
+  .data-entry-divider {
     background: #ccc;
-    margin: 20px 0;
+    height: 1px;
+    margin: 0;
   }
   
-  /* Page title styling */
-  .data-entry-container h4 {
-    font-size: 24px;
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  /* Image container */
-  .data-entry-image-container {
+  /* Content styling */
+  .data-entry-content {
+    flex: 1; /* Take up all remaining space */
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 300px; /* Adjust height as needed */
+    padding: 20px;
   }
   
   .data-entry-image {
-    max-width: 100%;
-    max-height: 100%;
+    max-width: 80%; /* Resize image to fit */
+    max-height: 80%; /* Maintain aspect ratio */
     object-fit: contain;
     border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
