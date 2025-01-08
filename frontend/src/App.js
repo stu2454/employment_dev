@@ -4,6 +4,7 @@ import LandingPage from "./components/LandingPage";
 import RoleSelection from "./components/RoleSelection";
 import RegistrationPage from "./components/RegistrationPage";
 import LoginPage from "./components/LoginPage";
+import DataEntryStart from "./pages/DataEntryStart";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/role-selection" element={<RoleSelection />} />
         <Route path="/register" element={<RegistrationPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/data-entry-start" element={<DataEntryStart />} />
       </Routes>
     </Router>
   );

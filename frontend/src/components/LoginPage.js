@@ -48,7 +48,7 @@ const LoginPage = () => {
         setMfaRequired(true);
       } else {
         alert("Login successful!");
-        navigate("/dashboard"); // Redirect to dashboard or appropriate page
+        navigate("/data-entry-start"); // Redirect to dashboard or appropriate page
       }
     } catch (error) {
       console.error("Login error:", error);
