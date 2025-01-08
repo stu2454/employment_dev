@@ -18,7 +18,7 @@ const LandingPage = () => {
               Login
             </button>
           </Link>
-          <Link to="/register">
+          <Link to="/role-selection">
             <button style={{ margin: "0 10px", padding: "10px 20px", border: "none", background: "#4CAF50", color: "white", borderRadius: "5px", cursor: "pointer" }}>
               Register
             </button>
