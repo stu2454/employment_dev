@@ -47,7 +47,7 @@ const LoginPage = () => {
       if (response.data.mfa_required) {
         setMfaRequired(true);
       } else {
-        alert("Login successful!");
+        //alert("Login successful!");
         navigate("/data-entry-start"); // Redirect to dashboard or appropriate page
       }
     } catch (error) {
