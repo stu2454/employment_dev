@@ -3,7 +3,7 @@ const router = express.Router();
 const createClient = require('../config/db'); // Import the createClient function
 
 router.post('/', async (req, res) => {
-  const { provider_name, provider_id, contact_phone, contact_email, number_of_sites, sites } = req.body;
+  const { provider_name, provider_id, contact_phone, contact_email, number_of_sites, sites, role } = req.body;
 
   console.log('Received payload:', req.body);
 
@@ -13,9 +13,8 @@ router.post('/', async (req, res) => {
     !provider_id ||
     !contact_phone ||
     !contact_email ||
-    !number_of_sites ||
-    !sites ||
-    sites.length !== number_of_sites
+    !role || // Validate role
+    (role === "admin" && (!number_of_sites || !sites || sites.length !== number_of_sites))
   ) {
     console.error("Invalid input:", req.body);
     return res.status(400).json({ error: "Invalid input. Please check the fields." });
@@ -38,19 +37,21 @@ router.post('/', async (req, res) => {
 
     // Insert provider details into the 'providers' table
     await client.query(
-      "INSERT INTO providers (provider_name, provider_id, contact_phone, contact_email, number_of_sites) VALUES ($1, $2, $3, $4, $5)",
-      [provider_name, provider_id, contact_phone, contact_email, number_of_sites]
+      "INSERT INTO providers (provider_name, provider_id, contact_phone, contact_email, number_of_sites, role) VALUES ($1, $2, $3, $4, $5, $6)",
+      [provider_name, provider_id, contact_phone, contact_email, number_of_sites || 0, role]
     );
 
     console.log("Inserted provider with email:", contact_email);
 
-    // Insert site details into the 'sites' table
-    for (const site_name of sites) {
-      await client.query(
-        "INSERT INTO sites (provider_id, contact_email, site_name) VALUES ($1, $2, $3)",
-        [provider_id, contact_email, site_name]
-      );
-      console.log("Inserted site:", site_name);
+    // Insert site details into the 'sites' table (only for admins)
+    if (role === "admin") {
+      for (const site_name of sites) {
+        await client.query(
+          "INSERT INTO sites (provider_id, contact_email, site_name) VALUES ($1, $2, $3)",
+          [provider_id, contact_email, site_name]
+        );
+        console.log("Inserted site:", site_name);
+      }
     }
 
     res.status(201).json({ message: "Provider registered successfully!" });

@@ -8,7 +8,7 @@ BEGIN
             contact_phone VARCHAR(20) NOT NULL,
             contact_email VARCHAR(255) NOT NULL,
             number_of_sites INTEGER NOT NULL,
-            role VARCHAR(10) NOT NULL DEFAULT 'staff', -- New column for role
+            role VARCHAR(10) NOT NULL, -- New column for role
             PRIMARY KEY (provider_id, contact_email) -- Composite primary key
         );
     ELSE
