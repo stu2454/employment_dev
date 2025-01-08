@@ -1,13 +1,19 @@
 import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { TextField, Button, Container, Typography, Grid, Alert, Divider } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import logos from "../assets/logos.png"; // Top-left logo
+import "../styles/RegistrationPage.css";
+
 
 const BACKEND_URL = process.env.REACT_APP_API_URL;
 
 const RegistrationPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const role = queryParams.get("role"); // "admin" or "staff"
+
   const [providerName, setProviderName] = useState("");
   const [providerID, setProviderID] = useState("");
   const [contactPhone, setContactPhone] = useState("");
@@ -85,20 +91,20 @@ const RegistrationPage = () => {
     }
 
     try {
-      //const response = await axios.post("http://localhost:5005/api/register", {
-      const response = await axios.post(`${BACKEND_URL}/api/register`, {
+      const payload = {
         provider_name: providerName,
         provider_id: providerID,
         contact_phone: contactPhone,
         contact_email: contactEmail,
-        number_of_sites: numberOfSites,
-        sites: sites,
-      });
+        number_of_sites: role === "admin" ? numberOfSites : undefined, // Only for admin
+        sites: role === "admin" ? sites : undefined, // Only for admin
+        role, // Pass the role to the backend
+      };
+
+      const response = await axios.post(`${BACKEND_URL}/api/register`, payload);
 
       if (response.data.message === "Provider registered successfully!") {
-        // Generate MFA
-        //const mfaResponse = await axios.post("http://localhost:5005/api/mfa/generate", {
-          const mfaResponse = await axios.post(`${BACKEND_URL}/api/mfa/generate`, {
+        const mfaResponse = await axios.post(`${BACKEND_URL}/api/mfa/generate`, {
           email: contactEmail,
         });
 
@@ -121,7 +127,6 @@ const RegistrationPage = () => {
 
   const handleVerifyMFA = async () => {
     try {
-      //const response = await axios.post("http://localhost:5005/api/mfa/verify", {
       const response = await axios.post(`${BACKEND_URL}/api/mfa/verify`, {
         email: contactEmail,
         otp: otp,
@@ -129,7 +134,6 @@ const RegistrationPage = () => {
 
       if (response.data.message === "MFA verified successfully.") {
         setMfaMessage("MFA verified successfully.");
-        // Redirect to login or dashboard
         navigate("/login");
       } else {
         setMfaMessage("Failed to verify MFA. Please try again.");
@@ -147,11 +151,7 @@ const RegistrationPage = () => {
           <img src={logos} alt="Logo" style={{ height: "50px" }} />
         </Grid>
         <Grid item>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => navigate("/login")}
-          >
+          <Button variant="contained" color="primary" onClick={() => navigate("/login")}>
             Login
           </Button>
         </Grid>
@@ -219,31 +219,35 @@ const RegistrationPage = () => {
                 required
               />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Number of Sites"
-                fullWidth
-                type="number"
-                value={numberOfSites}
-                onChange={(e) => {
-                  const newNumberOfSites = Math.max(1, parseInt(e.target.value, 10));
-                  setNumberOfSites(newNumberOfSites);
-                  setSites(Array(newNumberOfSites).fill(""));
-                }}
-                required
-              />
-            </Grid>
-            {sites.map((site, index) => (
-              <Grid item xs={12} key={index}>
-                <TextField
-                  label={`Site Name ${index + 1}`}
-                  fullWidth
-                  value={site}
-                  onChange={(e) => handleSiteChange(index, e.target.value)}
-                  required
-                />
-              </Grid>
-            ))}
+            {role === "admin" && (
+              <>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Number of Sites"
+                    fullWidth
+                    type="number"
+                    value={numberOfSites}
+                    onChange={(e) => {
+                      const newNumberOfSites = Math.max(1, parseInt(e.target.value, 10));
+                      setNumberOfSites(newNumberOfSites);
+                      setSites(Array(newNumberOfSites).fill(""));
+                    }}
+                    required
+                  />
+                </Grid>
+                {sites.map((site, index) => (
+                  <Grid item xs={12} key={index}>
+                    <TextField
+                      label={`Site Name ${index + 1}`}
+                      fullWidth
+                      value={site}
+                      onChange={(e) => handleSiteChange(index, e.target.value)}
+                      required
+                    />
+                  </Grid>
+                ))}
+              </>
+            )}
             <Grid item xs={12}>
               <Button type="submit" variant="contained" color="primary" fullWidth>
                 Register
