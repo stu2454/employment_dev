@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const registerRouter = require('./routes/register'); // Import the register route
 const mfaRoutes = require('./routes/mfa'); // Import the MFA routes
+const sitesRouter = require('./routes/sites'); // New sites route
+const loginRouter = require('./routes/login'); // New login route
 const createClient = require('./config/db'); // Import the database client function
 const initialiseDatabase = require('./config/initialiseDatabase'); // Import the initialiseDatabase function
 const fs = require('fs');
@@ -40,6 +42,12 @@ app.use('/api/register', registerRouter);
 
 // Register the /api/mfa route
 app.use('/api/mfa', mfaRoutes);
+
+// Register the /api/sites route
+app.use('/api/sites', sitesRouter);
+
+// Register the /api/login route
+app.use('/api/login', loginRouter);
 
 // Define /api/validate-provider route
 app.post('/api/validate-provider', async (req, res) => {
