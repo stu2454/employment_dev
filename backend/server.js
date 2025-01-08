@@ -4,12 +4,12 @@ const registerRouter = require('./routes/register'); // Import the register rout
 const mfaRoutes = require('./routes/mfa'); // Import the MFA routes
 const initialiseDatabase = require('./config/initialiseDatabase'); // Import the initialiseDatabase function
 
-console.log('InitialiseDatabase file path:', require.resolve('./config/initialiseDatabase'));
+//console.log('InitialiseDatabase file path:', require.resolve('./config/initialiseDatabase'));
 const fs = require('fs');
 const path = require('path');
 
 const schemaPath = path.join(__dirname, 'scripts', 'schema.sql');
-console.log('Schema file path exists:', fs.existsSync(schemaPath));
+//console.log('Schema file path exists:', fs.existsSync(schemaPath));
 
 const app = express();
 
@@ -39,12 +39,17 @@ app.use('/api/register', registerRouter);
 // Register the /api/mfa route
 app.use('/api/mfa', mfaRoutes);
 
+// Define /api/validate-provider route
 app.post('/api/validate-provider', async (req, res) => {
   const { provider_name, provider_id } = req.body;
 
+  // Validate input
   if (!provider_name || !provider_id) {
     return res.status(400).json({ valid: false });
   }
+
+  const client = createClient(); // Initialize database client
+  await client.connect();
 
   try {
     const result = await client.query(
@@ -52,10 +57,12 @@ app.post('/api/validate-provider', async (req, res) => {
       [provider_name, provider_id]
     );
 
-    res.json({ valid: result.rows.length > 0 });
+    res.json({ valid: result.rows.length > 0 }); // Return true if a match is found
   } catch (error) {
     console.error('Error validating provider:', error);
     res.status(500).json({ valid: false });
+  } finally {
+    await client.end(); // Close the database connection
   }
 });
 
