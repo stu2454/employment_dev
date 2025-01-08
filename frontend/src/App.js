@@ -4,7 +4,7 @@ import LandingPage from "./components/LandingPage";
 import RoleSelection from "./components/RoleSelection";
 import RegistrationPage from "./components/RegistrationPage";
 import LoginPage from "./components/LoginPage";
-import DataEntryStart from "./pages/DataEntryStart";
+import DataEntryStart from "./components/DataEntryStart";
 
 function App() {
   return (
